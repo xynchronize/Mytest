@@ -10,17 +10,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.client.Traverson;
 import org.springframework.hateoas.hal.Jackson2HalModule;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
 
+
+import org.springframework.hateoas.hal.HalLinkDiscoverer;
+
+
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import test.mine.mytest.R;
 import test.mine.mytest.model.Place;
@@ -44,6 +51,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         new HttpRequestTask().execute();
+        /*try {
+            traverse();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }*/
     }
 
     @Override
@@ -54,6 +66,19 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    public Object traverse() throws URISyntaxException {
+        String url = "http://203.151.92.199:8888";
+        ParameterizedTypeReference<Resource<Place>> resourceParameterizedTypeReference =
+                new ParameterizedTypeReference<Resource<Place>>() {
+                };
+        Traverson traverson = new Traverson(new URI(url), MediaTypes.HAL_JSON);
+        Resource<Place> placeResource = traverson.follow("$._embedded.place[0]._links.self.href")
+        .toObject(resourceParameterizedTypeReference);
+        Toast toast =  Toast.makeText(getApplicationContext(),"Success", Toast.LENGTH_SHORT);
+        toast.show();
+        return null;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -61,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            new HttpRequestTask().execute();
+          //new HttpRequestTask().execute();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -85,26 +110,16 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private class HttpRequestTask extends AsyncTask<Void, Void, Object> {
+    private class HttpRequestTask extends AsyncTask<Void,Void,Object> {
         @Override
         protected Object doInBackground(Void... params) {
             try{
                 String url = "http://203.151.92.199:8888/place";
+                Traverson traverson = new Traverson(new URI(url), MediaTypes.HAL_JSON);
+                ParameterizedTypeReference<Resource<Place>> resourceParameterizedTypeReference = new
+                        ParameterizedTypeReference<Resource<Place>>() {};
+                // stuck at this
 
-                ObjectMapper mapper = new ObjectMapper();
-
-                        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-                        mapper.registerModule(new Jackson2HalModule());
-
-                        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-                        converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
-                        converter.setObjectMapper(mapper);
-
-                RestTemplate template = new RestTemplate(Collections.<HttpMessageConverter<?>> singletonList(converter));
-                // Create a new RestTemplate instance
-
-                
-                return places;
             }
             catch (Exception e){
                 e.printStackTrace();
@@ -115,18 +130,13 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Object obj) {
-            //if(obj.getClass()==Place.class) {
-            //JSONObject jsonObject = (JSONObject) obj;
-            //ObjContainer objs = (ObjContainer)obj;
-            Place[] places = (Place[]) obj;
-            //TextView greetingIdText = (TextView) findViewById(R.id.id_value);
-            //TextView greetingContentText = (TextView) findViewById(R.id.content_value);
-            //System.out.println("?|?|?| "+obj.toString());
-            //greetingIdText.setText(places[0].getName());
-            // greetingContentText.setText(place.getName());
-            //}
+            //Something here
         }
 
+        public void traverse() throws URISyntaxException {
+
+
+        }
     }
 
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.hateoas.hal;
+/*package org.springframework.hateoas.hal;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,13 +33,13 @@ import java.util.Collections;
  *
  * @author Roy Clarkson
  */
-public class ResourceMappingJackson2HttpMessageConverter extends TypeConstrainedMappingJackson2HttpMessageConverter {
+//public class ResourceMappingJackson2HttpMessageConverter extends TypeConstrainedMappingJackson2HttpMessageConverter {
 
     /**
      * Construct a new {@code ResourceMappingJackson2HttpMessageConverter} with a
      * customized {@link ObjectMapper} to support HAL resources.
      */
-    public ResourceMappingJackson2HttpMessageConverter() {
+   /* public ResourceMappingJackson2HttpMessageConverter() {
         super(Resource.class);
         super.setSupportedMediaTypes(Collections.singletonList(new MediaType("application", "hal+json", DEFAULT_CHARSET)));
         ObjectMapper objectMapper = getObjectMapper();
@@ -48,4 +48,5 @@ public class ResourceMappingJackson2HttpMessageConverter extends TypeConstrained
         super.setObjectMapper(objectMapper);
     }
 
-}
+}*/
+
